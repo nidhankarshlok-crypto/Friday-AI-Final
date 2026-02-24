@@ -3,7 +3,7 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -12,6 +12,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
+
+      # ही स्टेप आपण ऍड करतोय - Java 17 सेट करण्यासाठी
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
       - name: Install System Dependencies
         run: |
@@ -22,7 +29,8 @@ jobs:
       - name: Build APK with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Yes command mhanje sarya terms and conditions automatic accept hotil
+          # इकडे आपण gradle ला सांगतोय की Java 17 वापर
+          export JAVA_HOME=$JAVA_HOME_17_X64
           yes | buildozer android debug
         
       - name: Upload APK
