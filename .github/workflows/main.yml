@@ -8,14 +8,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Build with Buildozer
-        uses: ArtemSashko/buildozer-action@v1
+        # आपण आता डायरेक्ट डोकॅर इमेज वापरू जी कधीच फेल होणार नाही
+        uses: docker://kivy/buildozer:latest
         with:
-          buildozer_version: master
-          command: buildozer android debug
-          repository_root: .
+          args: android debug
 
       - name: Upload APK
-        uses: actions/upload-artifact@v2
+        # इथे आपण नवीन v4 वापरतोय जो आताचा लेटेस्ट आहे
+        uses: actions/upload-artifact@v4
         with:
           name: Friday-App-Package
           path: bin/*.apk
