@@ -1,21 +1,32 @@
 name: Build APK
-on: [push]
+on: [push, workflow_dispatch]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
+      - name: Get Date
+        id: get-date
+        run: |
+          echo "date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Cache Buildozer JSONs
+        uses: actions/cache@v4
+        with:
+          path: .buildozer
+          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}-${{ steps.get-date.outputs.date }}
 
       - name: Build with Buildozer
-        # आपण आता डायरेक्ट डोकॅर इमेज वापरू जी कधीच फेल होणार नाही
-        uses: docker://kivy/buildozer:latest
+        uses: ArtemSashko/buildozer-action@v1.6.1
         with:
-          args: android debug
+          command: buildozer android debug
+          buildozer_version: master
 
       - name: Upload APK
-        # इथे आपण नवीन v4 वापरतोय जो आताचा लेटेस्ट आहे
         uses: actions/upload-artifact@v4
         with:
-          name: Friday-App-Package
+          name: Friday-App
           path: bin/*.apk
