@@ -4,26 +4,21 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Get Date
-        id: get-date
+      - name: Install Dependencies
         run: |
-          echo "date=$(date -u +'%Y%m%d')" >> $GITHUB_OUTPUT
-        shell: bash
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --user --upgrade Cython==0.29.33 buildozer
 
-      - name: Cache Buildozer JSONs
-        uses: actions/cache@v4
-        with:
-          path: .buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}-${{ steps.get-date.outputs.date }}
-
-      - name: Build with Buildozer
-        uses: ArtemSashko/buildozer-action@v1.6.1
-        with:
-          command: buildozer android debug
-          buildozer_version: master
+      - name: Build APK with Buildozer
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          buildozer android debug
+        # Ithe Buildozer process suru hoil
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
