@@ -9,6 +9,9 @@ package.name = fridayai
 # (str) Package domain (needed for android packaging)
 package.domain = org.test
 
+# (str) Application version
+version = 0.1
+
 # (str) Source code where the main.py is located
 source.dir = .
 
@@ -56,4 +59,5 @@ p4a.branch = master
 log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = off, 1 = on)
+
 warn_on_root = 1
